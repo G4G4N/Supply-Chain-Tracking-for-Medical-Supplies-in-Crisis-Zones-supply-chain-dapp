@@ -2,6 +2,10 @@
   "name": "supply-chain-dapp",
   "version": "0.1.0",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Mukaan17/Supply-Chain-Tracking-for-Medical-Supplies-in-Crisis-Zones-supply-chain-dapp"
+  },
   "dependencies": {
     "@sentry/react": "^7.91.0",
     "@testing-library/dom": "^10.4.1",

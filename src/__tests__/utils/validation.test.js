@@ -33,7 +33,7 @@ describe('Validation Utilities', () => {
 
   describe('validateAddress', () => {
     it('validates correct Ethereum address', () => {
-      const validAddress = '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb';
+      const validAddress = '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb0'; // 42 characters
       expect(validateAddress(validAddress)).toBeNull();
     });
 

@@ -10,9 +10,15 @@ export const validateAddress = (address) => {
 };
 
 export const validatePackageId = (id) => {
-  if (!id) return 'Package ID is required';
-  const numId = parseInt(id);
-  if (isNaN(numId)) return 'Package ID must be a number';
+  if (!id && id !== 0) return 'Package ID is required';
+  const idStr = String(id).trim();
+  if (idStr === '') return 'Package ID is required';
+  // Check if it's a valid number string (allows only digits, no letters)
+  if (!/^\d+$/.test(idStr)) {
+    return 'Package ID must be a number';
+  }
+  const numId = parseInt(idStr, 10);
+  if (isNaN(numId) || !Number.isInteger(numId)) return 'Package ID must be a number';
   if (numId < 1) return 'Package ID must be 1 or greater';
   return null;
 };

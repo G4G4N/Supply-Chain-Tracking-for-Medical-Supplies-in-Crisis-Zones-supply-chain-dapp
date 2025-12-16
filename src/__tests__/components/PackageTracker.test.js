@@ -25,10 +25,18 @@ jest.mock('../../hooks/useTransaction', () => ({
   })),
 }));
 
-// Mock wagmi and related modules before any imports
-jest.mock('wagmi', () => require('../../__mocks__/wagmi.js'));
-jest.mock('wagmi/chains', () => require('../../__mocks__/wagmi-chains.js'));
-jest.mock('wagmi/connectors', () => require('../../__mocks__/wagmi-connectors.js'));
+// Mock wagmi - use inline mocks to avoid circular dependency
+jest.mock('wagmi', () => {
+  const React = require('react');
+  return {
+    useAccount: jest.fn(() => ({
+      address: '0x1234567890123456789012345678901234567890',
+      isConnected: true,
+    })),
+    useChainId: jest.fn(() => 11155111),
+    WagmiProvider: ({ children }) => children,
+  };
+});
 
 describe('PackageTracker Component', () => {
   beforeEach(() => {

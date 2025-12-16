@@ -6,10 +6,28 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import App from '../App';
 
-// Mock wagmi and related modules before any imports
-jest.mock('wagmi', () => require('../__mocks__/wagmi.js'));
-jest.mock('wagmi/chains', () => require('../__mocks__/wagmi-chains.js'));
-jest.mock('wagmi/connectors', () => require('../__mocks__/wagmi-connectors.js'));
+// Mock wagmi - use inline mocks to avoid circular dependency
+jest.mock('wagmi', () => {
+  const React = require('react');
+  return {
+    useAccount: jest.fn(() => ({
+      address: undefined,
+      isConnected: false,
+    })),
+    useConnect: jest.fn(() => ({
+      connect: jest.fn(),
+      connectors: [],
+    })),
+    useDisconnect: jest.fn(() => ({
+      disconnect: jest.fn(),
+    })),
+    useChainId: jest.fn(() => 11155111),
+    useSwitchChain: jest.fn(() => ({
+      switchChain: jest.fn(),
+    })),
+    WagmiProvider: ({ children }) => children,
+  };
+});
 
 // Mock hooks
 jest.mock('../hooks/useWallet', () => ({

@@ -33,6 +33,17 @@ jest.mock('../../services/errorTracking', () => ({
   },
 }));
 
+// Mock config
+jest.mock('../../config', () => ({
+  __esModule: true,
+  default: {
+    transaction: {
+      maxRetryAttempts: 3,
+      retryDelay: 1000,
+    },
+  },
+}));
+
 describe('TransactionManager Service', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -52,7 +63,22 @@ describe('TransactionManager Service', () => {
     // Verify signer is set
     expect(transactionManager.signer).toBe(mockSigner);
     
-    const mockTx = Promise.resolve({ hash: '0x123', nonce: 0 });
+    // Prevent processQueue from running by setting processing flag
+    // This ensures the transaction stays in pending state
+    transactionManager.processing = true;
+    
+    // Create a proper transaction object with all required fields
+    const mockTransaction = {
+      hash: '0x1234567890123456789012345678901234567890123456789012345678901234',
+      nonce: 0,
+      from: mockSigner.address,
+      to: '0x0000000000000000000000000000000000000000',
+      value: '0',
+      gasLimit: '21000',
+      gasPrice: '20000000000',
+    };
+    
+    const mockTx = Promise.resolve(mockTransaction);
     const entry = await transactionManager.addTransaction(mockTx, {
       method: 'test',
     });
@@ -60,6 +86,10 @@ describe('TransactionManager Service', () => {
     expect(entry).toBeDefined();
     expect(entry.id).toBeDefined();
     expect(entry.status).toBe('pending');
+    expect(entry.hash).toBe(mockTransaction.hash);
+    
+    // Reset processing flag
+    transactionManager.processing = false;
   });
 
   it('should get pending transactions', () => {

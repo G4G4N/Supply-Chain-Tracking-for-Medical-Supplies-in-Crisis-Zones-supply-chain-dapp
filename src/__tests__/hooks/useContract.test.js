@@ -9,13 +9,43 @@ import { useContract, useContractAddress } from '../../hooks/useContract';
 const mockUseChainId = jest.fn();
 const mockUseWriteContract = jest.fn();
 
-// Mock wagmi and related modules before any imports
+// Mock wagmi - moduleNameMapper in jest.config.js handles the base mapping
+// We create inline mocks to avoid circular dependency with require()
 jest.mock('wagmi', () => {
-  const wagmiMock = require('../../__mocks__/wagmi.js');
+  const React = require('react');
   return {
-    ...wagmiMock,
+    useAccount: jest.fn(() => ({
+      address: '0x1234567890123456789012345678901234567890',
+      isConnected: true,
+      isConnecting: false,
+      isDisconnected: false,
+      connector: undefined,
+    })),
+    useConnect: jest.fn(() => ({
+      connect: jest.fn(),
+      connectors: [],
+      isPending: false,
+    })),
+    useDisconnect: jest.fn(() => ({
+      disconnect: jest.fn(),
+    })),
     useChainId: mockUseChainId,
+    useSwitchChain: jest.fn(() => ({
+      switchChain: jest.fn(),
+      isPending: false,
+    })),
     useWriteContract: () => mockUseWriteContract(),
+    useWaitForTransactionReceipt: jest.fn(() => ({
+      isLoading: false,
+      isSuccess: false,
+      isError: false,
+      data: null,
+      error: null,
+    })),
+    usePublicClient: jest.fn(() => ({
+      readContract: jest.fn(),
+      getBlockNumber: jest.fn(),
+    })),
     useReadContract: jest.fn(() => ({
       data: null,
       isLoading: false,
@@ -24,10 +54,11 @@ jest.mock('wagmi', () => {
       refetch: jest.fn(),
     })),
     useWatchContractEvent: jest.fn(() => ({})),
+    WagmiProvider: ({ children }) => children,
+    createConfig: jest.fn(() => ({})),
+    http: jest.fn(() => ({})),
   };
 });
-jest.mock('wagmi/chains', () => require('../../__mocks__/wagmi-chains.js'));
-jest.mock('wagmi/connectors', () => require('../../__mocks__/wagmi-connectors.js'));
 
 jest.mock('../../config/wagmi', () => ({
   getContractAddressForChain: jest.fn((chainId) => {

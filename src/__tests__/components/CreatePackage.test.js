@@ -6,10 +6,33 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { CreateShipmentForm } from '../../components/create-shipment-form';
 
-// Mock wagmi and related modules before any imports
-jest.mock('wagmi', () => require('../../__mocks__/wagmi.js'));
-jest.mock('wagmi/chains', () => require('../../__mocks__/wagmi-chains.js'));
-jest.mock('wagmi/connectors', () => require('../../__mocks__/wagmi-connectors.js'));
+// Mock wagmi - use inline mocks to avoid circular dependency
+jest.mock('wagmi', () => {
+  const React = require('react');
+  return {
+    useAccount: jest.fn(() => ({
+      address: '0x1234567890123456789012345678901234567890',
+      isConnected: true,
+    })),
+    useWriteContract: jest.fn(() => ({
+      writeContract: jest.fn(),
+      writeContractAsync: jest.fn(),
+      isPending: false,
+      isError: false,
+      error: null,
+    })),
+    useWaitForTransactionReceipt: jest.fn(() => ({
+      isLoading: false,
+      isSuccess: false,
+      isError: false,
+      data: null,
+      error: null,
+    })),
+    usePublicClient: jest.fn(() => ({
+      readContract: jest.fn(),
+    })),
+  };
+});
 
 jest.mock('../../hooks/useContract.js', () => ({
   useContractAddress: jest.fn(() => '0x0000000000000000000000000000000000000000'),

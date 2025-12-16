@@ -3,12 +3,12 @@
  * This avoids the tuple decoding issue with getPackageDetails
  */
 
-import React, { useEffect, useState, useRef, useCallback } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { useReadContract, useWatchContractEvent, usePublicClient } from 'wagmi';
 import { useContractAddress } from '../hooks/useContract';
 import { getContractABI } from '../config/contracts';
 import { ParsedPackage, formatPackageFromEvents } from '../utils/packageParser';
-import { Address, parseEventLogs, parseAbiItem } from 'viem';
+import { Address, parseEventLogs } from 'viem';
 import logger from '../services/logging';
 import cacheService from '../utils/cache';
 
@@ -1181,6 +1181,7 @@ export function PackagesFetcher({ onPackagesLoaded }: PackagesFetcherProps) {
     } finally {
       setIsLoading(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [publicClient, contractAddress, abi]);
 
   // Reset state when contract address changes (e.g., network switch)

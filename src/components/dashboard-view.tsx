@@ -322,7 +322,7 @@ import {
             const changeValue = parseFloat(changeStr.replace(/[+-]/g, ''));
             const isPositive = changeStr.startsWith('+') && changeValue > 0;
             const isNegative = changeStr.startsWith('-') || changeValue < 0;
-            const isNeutral = changeValue === 0 || stat.change === '0%';
+            // const isNeutral = changeValue === 0 || stat.change === '0%'; // Unused - commented out to fix ESLint error
             const changeColorClass = isPositive 
               ? "text-green-400 bg-green-500/10" 
               : isNegative 

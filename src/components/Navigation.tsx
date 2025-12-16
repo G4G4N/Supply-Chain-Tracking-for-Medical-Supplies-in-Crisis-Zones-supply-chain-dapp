@@ -13,7 +13,7 @@ import {
     Info,
     AlertTriangle,
     Search,
-    Filter,
+    // Filter, // Unused - commented out to fix ESLint error
   } from "lucide-react";
   import { useState, useRef, useEffect } from "react";
   import { useNotifications } from "../contexts/NotificationContext";

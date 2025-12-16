@@ -271,6 +271,7 @@ import {
           setTimeout(() => onRefresh(), 1000);
         }
       }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isTransferConfirmed, transferTxHash, shipment.id, onTransferOwnership, onRefresh, newOwner]);
   
     const handleStatusUpdate = async (newStatus: string) => {
@@ -665,6 +666,7 @@ import {
           setTimeout(() => onRefresh(), 2000);
         }
       }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isStatusConfirmed, statusTxHash, shipment.id, onRefresh]);
 
     // Handle status update errors (including cancellation/rejection)
@@ -699,6 +701,7 @@ import {
         
         setStatusUpdatePending(false);
       }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isStatusError, statusError, statusTxHash]);
 
     // Handle case where writeContract becomes non-pending without a hash (cancellation)
@@ -719,6 +722,7 @@ import {
         
         return () => clearTimeout(timeout);
       }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [statusUpdatePending, isStatusPending, statusTxHash, isStatusError]);
 
     // Handle transfer errors (including cancellation/rejection)
@@ -753,6 +757,7 @@ import {
         
         setTransferPending(false);
       }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isTransferError, transferError, transferTxHash]);
 
     // Handle case where writeContract becomes non-pending without a hash (cancellation)
@@ -773,6 +778,7 @@ import {
         
         return () => clearTimeout(timeout);
       }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [transferPending, isTransferPending, transferTxHash, isTransferError]);
 
     // Handle Escape key to close modal

@@ -5,10 +5,6 @@
 import { renderHook } from '@testing-library/react';
 import { useContract, useContractAddress } from '../../hooks/useContract';
 
-// Create mock functions that can be controlled in tests
-const mockUseChainId = jest.fn();
-const mockUseWriteContract = jest.fn();
-
 // Mock wagmi - moduleNameMapper in jest.config.js handles the base mapping
 // We create inline mocks to avoid circular dependency with require()
 jest.mock('wagmi', () => {
@@ -29,12 +25,19 @@ jest.mock('wagmi', () => {
     useDisconnect: jest.fn(() => ({
       disconnect: jest.fn(),
     })),
-    useChainId: mockUseChainId,
+    useChainId: jest.fn(() => 11155111), // Default return value
     useSwitchChain: jest.fn(() => ({
       switchChain: jest.fn(),
       isPending: false,
     })),
-    useWriteContract: () => mockUseWriteContract(),
+    useWriteContract: jest.fn(() => ({
+      writeContract: jest.fn(),
+      isPending: false,
+      isSuccess: false,
+      isError: false,
+      error: null,
+      data: null,
+    })),
     useWaitForTransactionReceipt: jest.fn(() => ({
       isLoading: false,
       isSuccess: false,
@@ -81,11 +84,15 @@ jest.mock('../../services/logging', () => ({
   },
 }));
 
+// Import wagmi to access the mocked functions
+const wagmi = require('wagmi');
+
 describe('useContract Hook', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockUseChainId.mockReturnValue(11155111);
-    mockUseWriteContract.mockReturnValue({
+    // Reset mocks to default values
+    wagmi.useChainId.mockReturnValue(11155111);
+    wagmi.useWriteContract.mockReturnValue({
       writeContract: jest.fn(),
       isPending: false,
       isSuccess: false,
@@ -108,7 +115,7 @@ describe('useContract Hook', () => {
   });
 
   it('returns not ready when address is not available', () => {
-    mockUseChainId.mockReturnValue(1); // Different chain without address
+    wagmi.useChainId.mockReturnValue(1); // Different chain without address
     const { result } = renderHook(() => useContract());
 
     expect(result.current.isReady).toBe(false);

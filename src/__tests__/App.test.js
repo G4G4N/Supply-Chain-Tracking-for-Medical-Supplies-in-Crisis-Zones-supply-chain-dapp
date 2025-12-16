@@ -29,6 +29,21 @@ jest.mock('wagmi', () => {
   };
 });
 
+// Mock wagmi/chains and wagmi/connectors to prevent ESM import errors
+jest.mock('wagmi/chains', () => ({
+  sepolia: { id: 11155111, name: 'Sepolia', network: 'sepolia' },
+  mainnet: { id: 1, name: 'Ethereum', network: 'homestead' },
+  polygon: { id: 137, name: 'Polygon', network: 'matic' },
+  arbitrum: { id: 42161, name: 'Arbitrum One', network: 'arbitrum' },
+  optimism: { id: 10, name: 'Optimism', network: 'optimism' },
+}));
+
+jest.mock('wagmi/connectors', () => ({
+  injected: jest.fn(() => ({ id: 'injected', name: 'Injected' })),
+  walletConnect: jest.fn(() => ({ id: 'walletConnect', name: 'WalletConnect' })),
+  coinbaseWallet: jest.fn(() => ({ id: 'coinbaseWallet', name: 'Coinbase Wallet' })),
+}));
+
 // Mock hooks
 jest.mock('../hooks/useWallet', () => ({
   useWallet: jest.fn(() => ({
@@ -95,6 +110,34 @@ jest.mock('../services/websocket', () => ({
   disconnect: jest.fn(),
   on: jest.fn(() => jest.fn()),
 }));
+
+// Mock NotificationContext
+jest.mock('../contexts/NotificationContext', () => {
+  const React = require('react');
+  const NotificationContext = React.createContext({
+    notifications: [],
+    addNotification: jest.fn(),
+    removeNotification: jest.fn(),
+    clearAllNotifications: jest.fn(),
+    unreadCount: 0,
+    markAsRead: jest.fn(),
+    markAllAsRead: jest.fn(),
+  });
+  
+  return {
+    NotificationContext,
+    NotificationProvider: ({ children }) => children,
+    useNotifications: () => ({
+      notifications: [],
+      addNotification: jest.fn(),
+      removeNotification: jest.fn(),
+      clearAllNotifications: jest.fn(),
+      unreadCount: 0,
+      markAsRead: jest.fn(),
+      markAllAsRead: jest.fn(),
+    }),
+  };
+});
 
 describe('App Component', () => {
   beforeEach(() => {

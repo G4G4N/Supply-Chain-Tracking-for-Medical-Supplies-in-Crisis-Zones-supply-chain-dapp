@@ -5,6 +5,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { CreateShipmentForm } from '../../components/create-shipment-form';
+import { NotificationProvider } from '../../contexts/NotificationContext';
 
 // Mock wagmi - use inline mocks to avoid circular dependency
 jest.mock('wagmi', () => {
@@ -46,25 +47,53 @@ jest.mock('../../config/contracts', () => ({
   getContractABI: jest.fn(() => []),
 }));
 
+// Mock NotificationContext
+jest.mock('../../contexts/NotificationContext', () => {
+  const React = require('react');
+  const NotificationContext = React.createContext({
+    showNotification: jest.fn(),
+    clearNotifications: jest.fn(),
+    notifications: [],
+  });
+  
+  return {
+    NotificationContext,
+    NotificationProvider: ({ children }) => children,
+    useNotifications: () => ({
+      showNotification: jest.fn(),
+      clearNotifications: jest.fn(),
+      notifications: [],
+    }),
+  };
+});
+
 describe('CreateShipmentForm Component', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
+  const renderWithProvider = (component) => {
+    return render(
+      <NotificationProvider>
+        {component}
+      </NotificationProvider>
+    );
+  };
+
   it('renders without crashing', () => {
-    render(<CreateShipmentForm walletConnected={true} />);
+    renderWithProvider(<CreateShipmentForm walletConnected={true} />);
     // Component should render - check for any text that should be present
     expect(screen.getByText(/Create Shipment|Create Package|Description/i)).toBeInTheDocument();
   });
 
   it('displays description input', () => {
-    render(<CreateShipmentForm walletConnected={true} />);
+    renderWithProvider(<CreateShipmentForm walletConnected={true} />);
     const input = screen.getByPlaceholderText(/description/i);
     expect(input).toBeInTheDocument();
   });
 
   it('shows wallet connection message when not connected', () => {
-    render(<CreateShipmentForm walletConnected={false} />);
+    renderWithProvider(<CreateShipmentForm walletConnected={false} />);
     // Should show message about connecting wallet
     expect(screen.getByText(/connect|wallet/i)).toBeInTheDocument();
   });

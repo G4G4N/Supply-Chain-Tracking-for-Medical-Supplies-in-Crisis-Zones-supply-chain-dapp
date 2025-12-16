@@ -25,7 +25,10 @@ jest.mock('../../hooks/useTransaction', () => ({
   })),
 }));
 
-// wagmi is mocked via jest.config.js moduleNameMapper
+// Mock wagmi and related modules before any imports
+jest.mock('wagmi', () => require('../../__mocks__/wagmi.js'));
+jest.mock('wagmi/chains', () => require('../../__mocks__/wagmi-chains.js'));
+jest.mock('wagmi/connectors', () => require('../../__mocks__/wagmi-connectors.js'));
 
 describe('PackageTracker Component', () => {
   beforeEach(() => {

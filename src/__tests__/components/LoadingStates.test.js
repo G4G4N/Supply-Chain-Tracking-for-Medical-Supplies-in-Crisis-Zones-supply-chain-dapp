@@ -15,21 +15,19 @@ import {
 
 describe('LoadingStates Components', () => {
   it('renders PackageCardSkeleton', () => {
-    render(<PackageCardSkeleton />);
-    const skeleton = screen.getByRole('generic');
-    expect(skeleton).toBeInTheDocument();
+    const { container } = render(<PackageCardSkeleton />);
+    // Use container instead of role query to avoid multiple generic elements
+    expect(container.firstChild).toBeInTheDocument();
   });
 
   it('renders ListItemSkeleton', () => {
-    render(<ListItemSkeleton />);
-    const skeleton = screen.getByRole('generic');
-    expect(skeleton).toBeInTheDocument();
+    const { container } = render(<ListItemSkeleton />);
+    expect(container.firstChild).toBeInTheDocument();
   });
 
   it('renders LoadingSpinner', () => {
-    render(<LoadingSpinner />);
-    const spinner = screen.getByRole('generic');
-    expect(spinner).toBeInTheDocument();
+    const { container } = render(<LoadingSpinner />);
+    expect(container.firstChild).toBeInTheDocument();
   });
 
   it('renders LoadingOverlay with message', () => {
@@ -43,9 +41,9 @@ describe('LoadingStates Components', () => {
   });
 
   it('renders TableSkeleton', () => {
-    render(<TableSkeleton rows={3} columns={4} />);
-    const table = screen.getByRole('generic');
-    expect(table).toBeInTheDocument();
+    const { container } = render(<TableSkeleton rows={3} columns={4} />);
+    // Use container to avoid multiple generic role elements
+    expect(container.firstChild).toBeInTheDocument();
   });
 });
 

@@ -7,6 +7,8 @@ module.exports = {
       '<rootDir>/__mocks__/fileMock.js',
     // Mock wagmi - must come before other patterns
     '^wagmi$': '<rootDir>/src/__mocks__/wagmi.js',
+    '^wagmi/chains$': '<rootDir>/src/__mocks__/wagmi-chains.js',
+    '^wagmi/connectors$': '<rootDir>/src/__mocks__/wagmi-connectors.js',
     '^wagmi/(.*)$': '<rootDir>/src/__mocks__/wagmi.js',
     '^@wagmi/(.*)$': '<rootDir>/src/__mocks__/wagmi.js',
     // Mock viem

@@ -6,36 +6,20 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { CreateShipmentForm } from '../../components/create-shipment-form';
 
-// Mock wagmi hooks
-jest.mock('wagmi', () => ({
-  useWriteContract: jest.fn(() => ({
-    writeContract: jest.fn(),
-    writeContractAsync: jest.fn(),
-    isPending: false,
-    isError: false,
-    error: null,
-  })),
-  useWaitForTransactionReceipt: jest.fn(() => ({
-    isLoading: false,
-    isSuccess: false,
-    isError: false,
-    data: null,
-    error: null,
-  })),
-  usePublicClient: jest.fn(() => ({
-    readContract: jest.fn(),
-  })),
-  useAccount: jest.fn(() => ({
-    address: '0x1234567890123456789012345678901234567890',
-    isConnected: true,
-  })),
-}));
+// Mock wagmi and related modules before any imports
+jest.mock('wagmi', () => require('../../__mocks__/wagmi.js'));
+jest.mock('wagmi/chains', () => require('../../__mocks__/wagmi-chains.js'));
+jest.mock('wagmi/connectors', () => require('../../__mocks__/wagmi-connectors.js'));
 
-jest.mock('../hooks/useContract', () => ({
+jest.mock('../../hooks/useContract.js', () => ({
   useContractAddress: jest.fn(() => '0x0000000000000000000000000000000000000000'),
+  useContract: jest.fn(() => ({
+    address: '0x0000000000000000000000000000000000000000',
+    isReady: true,
+  })),
 }));
 
-jest.mock('../config/contracts', () => ({
+jest.mock('../../config/contracts', () => ({
   getContractABI: jest.fn(() => []),
 }));
 

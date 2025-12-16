@@ -52,8 +52,9 @@ describe('ErrorBoundary Component', () => {
       </ErrorBoundary>
     );
 
-    const resetButton = screen.getByRole('button', { name: /reload/i });
-    resetButton.click();
+    // ErrorBoundary uses ErrorEmptyState which has a "Try Again" button
+    const retryButton = screen.getByRole('button', { name: /try again/i });
+    retryButton.click();
 
     expect(onReset).toHaveBeenCalled();
   });

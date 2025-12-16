@@ -70,6 +70,21 @@ const WagmiContext = React.createContext ? React.createContext(null) : {};
 
 const createConfig = jest.fn(() => ({}));
 
+// Mock chains
+const sepolia = { id: 11155111, name: 'Sepolia', network: 'sepolia' };
+const mainnet = { id: 1, name: 'Ethereum', network: 'homestead' };
+const polygon = { id: 137, name: 'Polygon', network: 'matic' };
+const arbitrum = { id: 42161, name: 'Arbitrum One', network: 'arbitrum' };
+const optimism = { id: 10, name: 'Optimism', network: 'optimism' };
+
+// Mock http transport
+const http = jest.fn(() => ({}));
+
+// Mock connectors
+const injected = jest.fn(() => ({ id: 'injected', name: 'Injected' }));
+const walletConnect = jest.fn(() => ({ id: 'walletConnect', name: 'WalletConnect' }));
+const coinbaseWallet = jest.fn(() => ({ id: 'coinbaseWallet', name: 'Coinbase Wallet' }));
+
 // CommonJS exports
 module.exports = {
   useAccount,
@@ -85,4 +100,15 @@ module.exports = {
   WagmiProvider,
   WagmiContext,
   createConfig,
+  http,
+  // Export chains for wagmi/chains
+  sepolia,
+  mainnet,
+  polygon,
+  arbitrum,
+  optimism,
+  // Export connectors for wagmi/connectors
+  injected,
+  walletConnect,
+  coinbaseWallet,
 };

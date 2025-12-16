@@ -9,6 +9,7 @@ import { useContract, useContractAddress } from '../../hooks/useContract';
 // We create inline mocks to avoid circular dependency with require()
 jest.mock('wagmi', () => {
   const React = require('react');
+  
   return {
     useAccount: jest.fn(() => ({
       address: '0x1234567890123456789012345678901234567890',
@@ -89,8 +90,9 @@ const wagmi = require('wagmi');
 
 describe('useContract Hook', () => {
   beforeEach(() => {
+    // Reset mocks but keep implementations
     jest.clearAllMocks();
-    // Reset mocks to default values
+    // Ensure useChainId returns the chainId - use mockReturnValue to set the return value
     wagmi.useChainId.mockReturnValue(11155111);
     wagmi.useWriteContract.mockReturnValue({
       writeContract: jest.fn(),

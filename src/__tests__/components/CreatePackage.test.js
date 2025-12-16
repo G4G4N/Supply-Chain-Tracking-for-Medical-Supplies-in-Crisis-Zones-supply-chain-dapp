@@ -10,17 +10,23 @@ import { NotificationProvider } from '../../contexts/NotificationContext';
 // Mock wagmi - use inline mocks to avoid circular dependency
 jest.mock('wagmi', () => {
   const React = require('react');
+  const mockUseAccount = jest.fn(() => ({
+    address: '0x1234567890123456789012345678901234567890',
+    isConnected: true,
+    isConnecting: false,
+    isDisconnected: false,
+    connector: undefined,
+  }));
+  
   return {
-    useAccount: jest.fn(() => ({
-      address: '0x1234567890123456789012345678901234567890',
-      isConnected: true,
-    })),
+    useAccount: mockUseAccount,
     useWriteContract: jest.fn(() => ({
       writeContract: jest.fn(),
       writeContractAsync: jest.fn(),
       isPending: false,
       isError: false,
       error: null,
+      data: null,
     })),
     useWaitForTransactionReceipt: jest.fn(() => ({
       isLoading: false,
@@ -32,8 +38,25 @@ jest.mock('wagmi', () => {
     usePublicClient: jest.fn(() => ({
       readContract: jest.fn(),
     })),
+    useChainId: jest.fn(() => 11155111),
+    WagmiProvider: ({ children }) => children,
   };
 });
+
+// Mock wagmi/chains and wagmi/connectors to prevent ESM import errors
+jest.mock('wagmi/chains', () => ({
+  sepolia: { id: 11155111, name: 'Sepolia', network: 'sepolia' },
+  mainnet: { id: 1, name: 'Ethereum', network: 'homestead' },
+  polygon: { id: 137, name: 'Polygon', network: 'matic' },
+  arbitrum: { id: 42161, name: 'Arbitrum One', network: 'arbitrum' },
+  optimism: { id: 10, name: 'Optimism', network: 'optimism' },
+}));
+
+jest.mock('wagmi/connectors', () => ({
+  injected: jest.fn(() => ({ id: 'injected', name: 'Injected' })),
+  walletConnect: jest.fn(() => ({ id: 'walletConnect', name: 'WalletConnect' })),
+  coinbaseWallet: jest.fn(() => ({ id: 'coinbaseWallet', name: 'Coinbase Wallet' })),
+}));
 
 jest.mock('../../hooks/useContract.js', () => ({
   useContractAddress: jest.fn(() => '0x0000000000000000000000000000000000000000'),
@@ -67,9 +90,20 @@ jest.mock('../../contexts/NotificationContext', () => {
   };
 });
 
+// Import wagmi to access the mocked functions
+const wagmi = require('wagmi');
+
 describe('CreateShipmentForm Component', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    // Ensure useAccount returns the correct value
+    wagmi.useAccount.mockReturnValue({
+      address: '0x1234567890123456789012345678901234567890',
+      isConnected: true,
+      isConnecting: false,
+      isDisconnected: false,
+      connector: undefined,
+    });
   });
 
   const renderWithProvider = (component) => {

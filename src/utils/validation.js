@@ -6,6 +6,10 @@ export const validateAddress = (address) => {
   if (!address.startsWith('0x')) return 'Address must start with 0x';
   if (address.length !== 42) return 'Address must be 42 characters long';
   if (!/^0x[a-fA-F0-9]{40}$/.test(address)) return 'Invalid address format';
+  // Reject zero address
+  if (address === '0x0000000000000000000000000000000000000000') {
+    return 'Zero address is not allowed';
+  }
   return null;
 };
 
